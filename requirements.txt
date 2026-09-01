@@ -3,3 +3,6 @@ webdriver-manager
 pandas
 openpyxl
 tqdm
+fastapi
+uvicorn[standard]
+pydantic

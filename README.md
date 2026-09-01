@@ -10,10 +10,14 @@ A robust, Python-based web scraper built with Selenium to extract detailed busin
 - **Headless Mode:** Can be run in the background without launching a visible browser window.
 - **Excel Export:** Cleans, formats, and saves all extracted data into a neat Excel (`.xlsx`) sheet using Pandas. 
 - **Duplicate Prevention:** Automatically removes duplicate entries when saving data.
+- **REST API + Swagger:** FastAPI service with interactive OpenAPI docs at `/api/docs`.
 
 ## Project Structure
 
 - `main.py`: The entry point of the application. It initializes the scraper, starts the search, and saves the data.
+- `app.py`: Streamlit web UI for running a scrape from the browser.
+- `api.py`: FastAPI REST API (Swagger UI at `/api/docs`, ReDoc at `/api/redoc`).
+- `schemas.py`: Request and response models used by the API / OpenAPI spec.
 - `scraper.py`: Contains the `BusinessScraper` class responsible for browser automation, scrolling, and extracting raw DOM elements.
 - `parser.py`: Contains the `BusinessParser` utility class that cleans text and uses Regular Expressions to parse raw strings into actionable data (like extracting lat/long from a URL).
 - `excel.py`: Contains the `ExcelManager` class which uses Pandas to store and append data to an Excel file.
@@ -63,6 +67,8 @@ OUTPUT_FILE = "data/google_maps.xlsx"
 
 ## Usage
 
+### CLI
+
 Run the main script to start scraping:
 
 ```bash
@@ -75,6 +81,54 @@ The script will:
 3. Scroll down the left panel to load more results.
 4. Extract the details of each found business.
 5. Save the output to `data/google_maps.xlsx`.
+
+### REST API (Swagger)
+
+Install dependencies, then start the API:
+
+```bash
+pip install -r requirements.txt
+python api.py
+```
+
+Or:
+
+```bash
+uvicorn main:app --reload
+```
+
+Then open:
+
+- **Swagger UI:** http://localhost:8000/api/docs
+- **ReDoc:** http://localhost:8000/api/redoc
+- **OpenAPI JSON:** http://localhost:8000/api/openapi.json
+
+http://localhost:8000/ and `/docs` redirect to Swagger.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check |
+| `POST` | `/scrape` | Run a Maps scrape and return JSON |
+| `GET` | `/export` | Download the last Excel file |
+
+`POST /scrape` example body:
+
+```json
+{
+  "keyword": "barber shops in Dindigul",
+  "max_scrolls": 10,
+  "headless": true,
+  "save_excel": true
+}
+```
+
+This request is synchronous and can take several minutes.
+
+### Streamlit UI
+
+```bash
+streamlit run app.py
+```
 
 ## Data Output
 

@@ -5,6 +5,7 @@ main.py
 Application entry point
 """
 
+from api import app  # noqa: F401  — ASGI app for `uvicorn main:app`
 from config import SEARCH_KEYWORD, OUTPUT_FILE, HEADLESS
 from scraper import BusinessScraper
 from excel import ExcelManager
